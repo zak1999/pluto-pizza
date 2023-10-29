@@ -6,7 +6,6 @@ import Link from "next/link";
 
 const Navbar = () => {
   const path = usePathname();
-
   return (
     <div className="tabs">
       <Link
@@ -18,14 +17,13 @@ const Navbar = () => {
       >
         Create Your Pizza
       </Link>
-      <Link href={"/basket"}
+      <Link href={"/cart"}
           className={clsx(
             "tab tab-bordered",
-            path === "/basket" ? "tab-active" : ""
+            path === "/cart" ? "tab-active" : ""
           )}
         >
-          Basket
-
+          Cart
       </Link>
     </div>
   );
