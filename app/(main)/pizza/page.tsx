@@ -1,6 +1,8 @@
 "use client";
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from "react";
 import ToppingCard from "./components/ToppingCard";
+import toast, { Toaster } from 'react-hot-toast';
 
 type PizzaType = {
   size: string;
@@ -43,7 +45,14 @@ const menu: PizzaType[] = [
   },
 ];
 
+export const notify = (msg: string, pos: boolean = true) => {
+  if (pos) return toast.success(msg);
+  else return toast(msg);
+};
+
 const page = () => {
+  const router = useRouter()
+
   // inital pizza and price is set to that of a small pizza.
   const [currentPizzaChoice, setCurrentPizzaChoice] = useState<PizzaType>(
     menu[0]
@@ -78,14 +87,40 @@ const page = () => {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     // STORE IN COOKEIES?? OR STORE IN LOCALSTORAGE
-    console.log({
-      size: currentPizzaChoice.size,
-      toppings: currentToppings,
-      price: currentPrice,
-    });
+    e.preventDefault()
+    if (typeof window !== "undefined" && window.localStorage) {
+      const cartItems =
+        JSON.parse(localStorage.getItem("cartItems") as string) || [];
+        localStorage.setItem(
+        // store new pizza in localStorage
+        "cartItems",
+        JSON.stringify([
+          ...cartItems,
+          {
+            size: currentPizzaChoice.size,
+            toppings: currentToppings,
+            price: currentPrice,
+          },
+        ])
+      );
+      //soft refresh so that the screen doesnt blank out,
+      // but cart in nav still updates correctly
+      router.refresh()
+      // clear to defualt
+      setStatesToDefault()  
+      notify('Added pizza to cart')
+    }
   };
+  const setStatesToDefault = (e?: React.MouseEvent) => {
+    e && e.preventDefault();
+    setCurrentPizzaChoice(menu[0]);
+    setCurrentPrice(menu[0].price);
+    setCurrentToppings([]);
+  };
+
   return (
     <div className="w-full">
+      <Toaster position="bottom-center" />
       <div className="flex justify-between">
         <h2 className="text-xl font-semibold tracking-tight">
           Create your pizza here:{" "}
@@ -100,10 +135,9 @@ const page = () => {
           <select
             onChange={(e) => handlePizzaSizeChange(e.target.value)}
             className="select w-full max-w-xs select-accent"
+            defaultValue={"small"}
           >
-            <option value={"small"} selected>
-              Small
-            </option>
+            <option value={"small"}>Small</option>
             <option value={"medium"}>Medium</option>
             <option value={"large"}>Large</option>
           </select>{" "}
@@ -128,7 +162,7 @@ const page = () => {
                 <span> with</span>
                 <ul className="list-disc list-inside">
                   {currentToppings.map((topping, i) => (
-                    <li>
+                    <li key={`${topping}_${i}`}>
                       {<span> {topping}</span>}{" "}
                       {i + 1 > currentPizzaChoice.includedToppings
                         ? "(+£1.49)"
@@ -142,15 +176,7 @@ const page = () => {
             )}
           </p>
         </div>
-        <button
-          className="btn"
-          onClick={(e) => {
-            e.preventDefault();
-            setCurrentPizzaChoice(menu[0]);
-            setCurrentPrice(menu[0].price);
-            setCurrentToppings([]);
-          }}
-        >
+        <button className="btn" onClick={(e) => setStatesToDefault(e)}>
           Start again
         </button>
         <button

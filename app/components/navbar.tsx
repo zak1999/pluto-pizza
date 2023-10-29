@@ -6,10 +6,13 @@ import Link from "next/link";
 
 const Navbar = () => {
   const path = usePathname();
+  const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]")
+  const cartItemsCount = cartItems.length
+  
   return (
     <div className="tabs">
       <Link
-        href='/pizza'
+        href="/pizza"
         className={clsx(
           "tab tab-bordered",
           path === "/pizza" ? "tab-active" : ""
@@ -17,13 +20,14 @@ const Navbar = () => {
       >
         Create Your Pizza
       </Link>
-      <Link href={"/cart"}
-          className={clsx(
-            "tab tab-bordered",
-            path === "/cart" ? "tab-active" : ""
-          )}
-        >
-          Cart
+      <Link
+        href={"/cart"}
+        className={clsx(
+          "tab tab-bordered",
+          path === "/cart" ? "tab-active" : ""
+        )}
+      >
+        Cart ({cartItemsCount})
       </Link>
     </div>
   );
