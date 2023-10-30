@@ -1,8 +1,8 @@
 "use client";
-import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from "react";
 import ToppingCard from "./components/ToppingCard";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
+import { useCart } from "../layout";
 
 type PizzaType = {
   size: string;
@@ -51,15 +51,22 @@ export const notify = (msg: string, pos: boolean = true) => {
 };
 
 const page = () => {
-  const router = useRouter()
-
+  const { setCartCount } = useCart();
   // inital pizza and price is set to that of a small pizza.
   const [currentPizzaChoice, setCurrentPizzaChoice] = useState<PizzaType>(
     menu[0]
   );
   const [currentPrice, setCurrentPrice] = useState<number>(menu[0].price);
   const [currentToppings, setCurrentToppings] = useState<string[]>([]);
-
+  useEffect(() => {
+    let cartItemsFromLS
+    if (typeof window !== "undefined") {
+      cartItemsFromLS = localStorage.getItem('cartItems')
+    }
+    if (!cartItemsFromLS) return
+    setCartCount(JSON.parse(cartItemsFromLS).length)
+  }, [])
+  
   // we update a price update when there is a change in the toppings or pizza size
   useEffect(() => {
     const extraToppingsCost = Math.max(
@@ -67,8 +74,12 @@ const page = () => {
       0
     ); // we make sure we dont get a negative here
     if (extraToppingsCost) {
-      setCurrentPrice(extraToppingsCost * 1.49 + currentPizzaChoice.price);
-    } else setCurrentPrice(currentPizzaChoice.price);
+      setCurrentPrice(
+        Math.round(
+          (extraToppingsCost * 1.49 + currentPizzaChoice.price) * 100
+        ) / 100
+      );
+    } else setCurrentPrice(Math.round(currentPizzaChoice.price * 100) / 100);
   }, [currentPizzaChoice, currentToppings]);
 
   // this doesn't just update the size, but also the menu item - we then know how to work out price.
@@ -86,29 +97,29 @@ const page = () => {
   };
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    // STORE IN COOKEIES?? OR STORE IN LOCALSTORAGE
-    e.preventDefault()
+    e.preventDefault();
+    // STORE IN LOCALSTORAGE
     if (typeof window !== "undefined" && window.localStorage) {
       const cartItems =
         JSON.parse(localStorage.getItem("cartItems") as string) || [];
-        localStorage.setItem(
+      const newCart = [
+        ...cartItems,
+        {
+          size: currentPizzaChoice.size,
+          toppings: currentToppings,
+          price: Math.round(currentPrice * 100) / 100,
+        },
+      ];
+      localStorage.setItem(
         // store new pizza in localStorage
         "cartItems",
-        JSON.stringify([
-          ...cartItems,
-          {
-            size: currentPizzaChoice.size,
-            toppings: currentToppings,
-            price: currentPrice,
-          },
-        ])
+        JSON.stringify(newCart)
       );
-      //soft refresh so that the screen doesnt blank out,
-      // but cart in nav still updates correctly
-      router.refresh()
+      // update in nav
+      setCartCount(newCart.length);
       // clear to defualt
-      setStatesToDefault()  
-      notify('Added pizza to cart')
+      setStatesToDefault();
+      notify("Added pizza to cart");
     }
   };
   const setStatesToDefault = (e?: React.MouseEvent) => {
@@ -135,7 +146,7 @@ const page = () => {
           <select
             onChange={(e) => handlePizzaSizeChange(e.target.value)}
             className="select w-full max-w-xs select-accent"
-            defaultValue={"small"}
+            value={currentPizzaChoice.size}
           >
             <option value={"small"}>Small</option>
             <option value={"medium"}>Medium</option>
@@ -155,7 +166,7 @@ const page = () => {
         </div>
         <div className="">
           <h2 className="text-md font-semibold tracking-tight">Your pizza:</h2>
-          <p className="text-accent">
+          <div className="text-accent">
             A {currentPizzaChoice.size} pizza
             {currentToppings.length ? (
               <>
@@ -174,7 +185,7 @@ const page = () => {
             ) : (
               <>.</>
             )}
-          </p>
+          </div>
         </div>
         <button className="btn" onClick={(e) => setStatesToDefault(e)}>
           Start again

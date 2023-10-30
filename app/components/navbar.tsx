@@ -1,14 +1,12 @@
-"use client";
 import React from "react";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import Link from "next/link";
+import { useCart } from "../(main)/layout";
 
 const Navbar = () => {
+  const { cartCount } = useCart();
   const path = usePathname();
-  const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]")
-  const cartItemsCount = cartItems.length
-  
   return (
     <div className="tabs">
       <Link
@@ -27,7 +25,7 @@ const Navbar = () => {
           path === "/cart" ? "tab-active" : ""
         )}
       >
-        Cart ({cartItemsCount})
+        Cart ({cartCount})
       </Link>
     </div>
   );
