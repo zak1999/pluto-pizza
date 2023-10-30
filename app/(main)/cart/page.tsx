@@ -6,6 +6,7 @@ import { useCart } from "../layout";
 import Spinner from "@/app/components/spinner";
 import { PizzaForm } from "@/app/components/PizzaForm";
 import { CheckoutPizzaCard } from "@/app/components/CheckoutPizzaCard";
+import { useRouter } from "next/navigation";
 
 export type CheckoutPizza = {
   size: string;
@@ -14,10 +15,12 @@ export type CheckoutPizza = {
 };
 
 const page = () => {
+  const router = useRouter();
   const { cartCount, setCartCount } = useCart();
   const [cartItems, setCartItems] = useState<CheckoutPizza[] | undefined>(
     undefined
   );
+  const [submitted, setSubmitted] = useState(false)
   const [notes, setNotes] = useState("");
 
   useEffect(() => {
@@ -40,12 +43,30 @@ const page = () => {
     localStorage.setItem("cartItems", JSON.stringify(newCart));
     notify("Pizza removed", false);
   };
-  const handleCheckout = () => {
-    // send post req to endpoint 
-    // with info
-    // await,
-    // with whatever randomly generated id/index,
-    // we return it back to the page
+  const handleCheckout = async () => {
+    setSubmitted(true)
+    if (!cartItems) return;
+    const order = {
+      total: (Math.round(
+        cartItems.reduce((total, piz) => total + piz.price, 0) * 100
+      ) / 100),
+      order: cartItems,
+      notes:notes,
+    }
+    const res = await fetch("http://localhost:3000/api/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(order),
+    });
+    const data = await res.json()
+    console.log(data)
+    // clear localstorage
+    localStorage.clear();
+    // redirect to thank you page
+    router.push(`/thankyou/${data.orderNo}`)
+    setSubmitted(false)
   };
   if (cartItems == undefined) return <Spinner />;
   return (
@@ -92,10 +113,10 @@ const page = () => {
       </div>
       <button
         onClick={() => handleCheckout()}
-        disabled={cartItems.length == 0}
+        disabled={cartItems.length == 0 || submitted}
         className="btn flex self-end justify-self-end"
       >
-        Checkout
+        {submitted? <Spinner/>:'Checkout' } 
       </button>
     </div>
   );
