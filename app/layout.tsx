@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="retro">
       <body className={inter.className}>
-        <main className="flex min-h-screen flex-col items-center px-4 py-12 max-w-lg mx-auto ">
+        <main className="flex min-h-screen flex-col items-center px-4 py-12 max-w-lg mx-auto h-screen">
           <h2 className="text-3xl font-bold tracking-tight">
             Pluto's Pizza Shop{" "}
           </h2>
