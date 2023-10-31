@@ -1,10 +1,10 @@
 import { FC, useEffect, useState } from "react";
-import { CheckoutPizza } from "../(main)/cart/page";
 import { useCart } from "../(main)/layout";
 import { notify } from "../(main)/pizza/page";
 import ToppingCard from "./ToppingCard";
+import { CheckoutPizza } from "@/types.global";
 
-export type PizzaType = {
+type PizzaType = {
   size: string;
   price: number;
   includedToppings: number;
@@ -57,6 +57,7 @@ export const PizzaForm: FC<{
   const [currentPrice, setCurrentPrice] = useState<number>(menu[0].price);
   const [currentToppings, setCurrentToppings] = useState<string[]>([]);
 
+  // 
   useEffect(() => {
     if (editingPizza) {
       setCurrentPizzaChoice(

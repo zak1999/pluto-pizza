@@ -15,7 +15,7 @@ export const POST = async (
     const snapshot = await getCountFromServer(coll);
     const orderNo = (snapshot.data().count) + 1
     const docRef = await addDoc(collection(db, "orders"), { ...order, orderNo: orderNo });
-    console.log("Document written with ID: ", docRef.id);
+    // console.log("Document written with ID: ", docRef.id);
     return NextResponse.json({ message: 'Order Successfully received', orderNo: orderNo })
   } catch (error) {
     console.error("Error adding document: ", error);

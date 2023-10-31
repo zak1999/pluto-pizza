@@ -1,26 +1,22 @@
 "use client";
-import React, { FC, Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { notify } from "../pizza/page";
 import { Toaster } from "react-hot-toast";
 import { useCart } from "../layout";
-import Spinner from "@/app/components/spinner";
-import { PizzaForm } from "@/app/components/PizzaForm";
+import Spinner from "@/app/components/Spinner";
 import { CheckoutPizzaCard } from "@/app/components/CheckoutPizzaCard";
 import { useRouter } from "next/navigation";
+import { CheckoutPizza } from "@/types.global";
 
-export type CheckoutPizza = {
-  size: string;
-  toppings: string[];
-  price: number;
-};
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
   const { cartCount, setCartCount } = useCart();
   const [cartItems, setCartItems] = useState<CheckoutPizza[] | undefined>(
     undefined
   );
-  const [submitted, setSubmitted] = useState(false)
+  const [submitted, setSubmitted] = useState(false);
   const [notes, setNotes] = useState("");
 
   useEffect(() => {
@@ -43,30 +39,31 @@ const page = () => {
     localStorage.setItem("cartItems", JSON.stringify(newCart));
     notify("Pizza removed", false);
   };
+
   const handleCheckout = async () => {
-    setSubmitted(true)
+    setSubmitted(true);
     if (!cartItems) return;
     const order = {
-      total: (Math.round(
-        cartItems.reduce((total, piz) => total + piz.price, 0) * 100
-      ) / 100),
+      total:
+        Math.round(
+          cartItems.reduce((total, piz) => total + piz.price, 0) * 100
+        ) / 100,
       order: cartItems,
-      notes:notes,
-    }
-    const res = await fetch("http://localhost:3000/api/order", {
+      notes: notes,
+    };
+    const res = await fetch(`${BASE_URL}/api/order`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(order),
     });
-    const data = await res.json()
-    console.log(data)
+    const data = await res.json();
     // clear localstorage
     localStorage.clear();
     // redirect to thank you page
-    router.push(`/thankyou/${data.orderNo}`)
-    setSubmitted(false)
+    router.push(`/thankyou/${data.orderNo}`);
+    setSubmitted(false);
   };
   if (cartItems == undefined) return <Spinner />;
   return (
@@ -116,11 +113,10 @@ const page = () => {
         disabled={cartItems.length == 0 || submitted}
         className="btn flex self-end justify-self-end"
       >
-        {submitted? <Spinner/>:'Checkout' } 
+        {submitted ? <Spinner /> : "Checkout"}
       </button>
     </div>
   );
 };
 
-export default page;
-
+export default Page;

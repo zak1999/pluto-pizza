@@ -1,13 +1,13 @@
 "use client";
 import React, { Dispatch, Suspense, createContext, useContext, useState } from "react";
 import dynamic from "next/dynamic";
-import Spinner from "../components/spinner";
+import Spinner from "../components/Spinner";
 
 type CartContextType = {
   cartCount: number;
   setCartCount: Dispatch<React.SetStateAction<number>>;
 };
-const NoSSRNavbar = dynamic(() => import("../components/navbar"), {
+const NoSSRNavbar = dynamic(() => import("../components/Navbar"), {
   ssr: false,
 });
 export const CartContext = createContext<CartContextType | undefined>(

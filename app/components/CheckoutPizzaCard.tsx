@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { CheckoutPizza } from "../(main)/cart/page";
 import { Modal } from "./EditPizzaModal";
+import { CheckoutPizza } from "@/types.global";
 
 export const CheckoutPizzaCard: FC<{
   pizza: CheckoutPizza;

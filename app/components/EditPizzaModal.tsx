@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { CheckoutPizza } from "../(main)/cart/page";
 import { PizzaForm } from "./PizzaForm";
+import { CheckoutPizza } from "@/types.global";
 
 export const Modal: FC<{ pizza: CheckoutPizza; index: number }> = ({
   pizza,

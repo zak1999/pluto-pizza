@@ -1,7 +1,7 @@
-import Spinner from '@/app/components/spinner'
+import Spinner from '@/app/components/Spinner'
 import React from 'react'
 
-const loading = () => {
+const Loading = () => {
   return (
     <div>
       <Spinner/>
@@ -9,4 +9,4 @@ const loading = () => {
   )
 }
 
-export default loading
+export default Loading
