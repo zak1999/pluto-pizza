@@ -4,7 +4,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useCart } from "../(main)/layout";
 
-const  Navbar = () => {
+const Navbar = () => {
   const { cartCount } = useCart();
   const path = usePathname();
   return (
