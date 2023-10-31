@@ -1,12 +1,12 @@
 "use client";
 import React, { Fragment, useEffect, useState } from "react";
-import { notify } from "../pizza/page";
 import { Toaster } from "react-hot-toast";
 import { useCart } from "../layout";
 import Spinner from "@/app/components/Spinner";
 import { CheckoutPizzaCard } from "@/app/components/CheckoutPizzaCard";
 import { useRouter } from "next/navigation";
 import { CheckoutPizza } from "@/types.global";
+import { notify } from "@/utils";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 

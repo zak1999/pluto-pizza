@@ -1,8 +1,8 @@
 import { FC, useEffect, useState } from "react";
 import { useCart } from "../(main)/layout";
-import { notify } from "../(main)/pizza/page";
 import ToppingCard from "./ToppingCard";
 import { CheckoutPizza } from "@/types.global";
+import { notify } from "@/utils";
 
 type PizzaType = {
   size: string;

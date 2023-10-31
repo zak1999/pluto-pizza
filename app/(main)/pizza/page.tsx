@@ -4,11 +4,6 @@ import toast, { Toaster } from "react-hot-toast";
 import { useCart } from "../layout";
 import { PizzaForm } from "@/app/components/PizzaForm";
 
-export const notify = (msg: string, pos: boolean = true) => {
-  if (pos) return toast.success(msg);
-  else return toast(msg);
-};
-
 const Page = () => {
   const { setCartCount } = useCart();
   useEffect(() => {

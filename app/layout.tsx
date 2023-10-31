@@ -19,7 +19,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <main className="flex min-h-screen flex-col items-center px-4 py-12 max-w-lg mx-auto h-screen">
           <h2 className="text-3xl font-bold tracking-tight">
-            Pluto's Pizza Shop{" "}
+            Pluto&apos;s Pizza Shop{" "}
           </h2>
           {children}
         </main>
