@@ -9,7 +9,7 @@ export const notify = (msg: string, pos: boolean = true) => {
   else return toast(msg);
 };
 
-const page = () => {
+const Page = () => {
   const { setCartCount } = useCart();
   useEffect(() => {
     let cartItemsFromLS;
@@ -31,4 +31,4 @@ const page = () => {
     </div>
   );
 };
-export default page;
+export default Page;

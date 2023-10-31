@@ -22,7 +22,7 @@ export const useCart = (): CartContextType => {
   return context;
 };
 
-const layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   const [cartCount, setCartCount] = useState(0);
   return (
     <div className="flex flex-col items-center w-full h-full">
@@ -36,4 +36,4 @@ const layout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default layout;
+export default Layout;
